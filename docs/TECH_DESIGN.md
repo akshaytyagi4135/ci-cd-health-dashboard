@@ -1,6 +1,80 @@
 # Tech Design Document
 
 ## High-Level Architecture
+
+1. A scheduled **sync job** in the backend calls the GitHub Actions API and pulls the latest workflow runs.
+2. Runs are cached in memory to reduce API calls and persisted in **PostgreSQL** for historical queries.
+3. The **Express API** serves aggregated metrics and run details from the database.
+4. The **React frontend** periodically polls the API to render dashboard widgets.
+5. When a run fails, the backend's alert service posts a message to the configured **Slack webhook**.
+
+```mermaid
+flowchart LR
+  GH[GitHub Actions API] --> SJ[Sync Job]
+  SJ -->|stores| DB[(PostgreSQL)]
+  API[Express API] --> DB
+  FE[React Frontend] -->|fetch metrics & runs| API
+  API --> SL[Slack/Webhook]
+```
+
+## API Structure
+### `GET /api/metrics/summary`
+Aggregated metrics for recent workflow runs.
+
+```json
+{
+  "successRate": 92,
+  "failureRate": 8,
+  "avgBuildTime": "3:12",
+  "lastBuildStatus": "success"
+}
+```
+
+### `GET /api/builds?limit=20`
+Returns a list of the most recent workflow runs. `limit` controls the number returned.
+
+```json
+[
+  {
+    "id": 123,
+    "workflowName": "CI",
+    "branch": "main",
+    "status": "completed",
+    "conclusion": "success",
+    "duration": 192,
+    "timestamp": "2023-10-10T12:00:00Z"
+  }
+]
+```
+
+### `GET /api/builds/:id`
+Detailed data for a single workflow run.
+
+```json
+{
+  "id": 123,
+  "workflowName": "CI",
+  "branch": "main",
+  "status": "completed",
+  "conclusion": "success",
+  "duration": 192,
+  "timestamp": "2023-10-10T12:00:00Z",
+  "htmlUrl": "https://github.com/.../runs/123"
+}
+```
+
+### `GET /api/builds/:id/log`
+Retrieve log output for the specified run.
+
+```json
+{
+  "log": "..."
+}
+```
+
+## Database Schema
+The backend uses Prisma ORM. The `WorkflowRun` model stores metadata for every GitHub Actions run.
+=======
 The system periodically retrieves workflow run data from the GitHub Actions API, persists it in PostgreSQL, and serves metrics and run details via an Express.js API. A React frontend consumes this API to render a dashboard. On failed runs, the backend sends alerts through a configurable Slack webhook.
 
 ```mermaid
@@ -22,6 +96,7 @@ flowchart LR
 
 ## Database Schema
 The backend uses Prisma ORM. The `WorkflowRun` model captures metadata for each run.
+
 
 ```prisma
 // prisma/schema.prisma
@@ -61,6 +136,8 @@ App
 - **Summary Panel:** top section with large numeric metrics.
 - **Build List:** table of recent runs showing status (color coded), branch, duration, and timestamp.
 - **Charts:** visualizations for success/failure distribution and build time trends.
+- **Detail Modal:** slide-in or modal showing run metadata and log snippet when a build row is clicked.
+
 
 ## Alert Flow
 1. Backend fetches new runs from GitHub API.
