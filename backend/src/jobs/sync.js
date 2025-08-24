@@ -9,6 +9,7 @@ export function startSync() {
     const owner = process.env.REPO_OWNER;
     const repo = process.env.REPO_NAME;
     const token = process.env.GH_TOKEN;
+
     const webhook = process.env.WEBHOOK_URL;
     if (!owner || !repo || !token) return;
     try {

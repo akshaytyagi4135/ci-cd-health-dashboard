@@ -1,6 +1,7 @@
 # Tech Design Document
 
 ## High-Level Architecture
+
 1. A scheduled **sync job** in the backend calls the GitHub Actions API and pulls the latest workflow runs.
 2. Runs are cached in memory to reduce API calls and persisted in **PostgreSQL** for historical queries.
 3. The **Express API** serves aggregated metrics and run details from the database.
@@ -73,6 +74,29 @@ Retrieve log output for the specified run.
 
 ## Database Schema
 The backend uses Prisma ORM. The `WorkflowRun` model stores metadata for every GitHub Actions run.
+
+The system periodically retrieves workflow run data from the GitHub Actions API, persists it in PostgreSQL, and serves metrics and run details via an Express.js API. A React frontend consumes this API to render a dashboard. On failed runs, the backend sends alerts through a configurable Slack webhook.
+
+```mermaid
+flowchart LR
+  GH[GitHub Actions API] --> B[(Backend Service)]
+  B -->|stores| DB[(PostgreSQL)]
+  B -->|REST API| FE[React Frontend]
+  B -->|alerts| SL[Slack Webhook]
+  FE -->|fetch metrics & runs| B
+```
+
+## API Structure
+| Route | Method | Description | Sample Response |
+|-------|--------|-------------|-----------------|
+| `/api/metrics/summary` | GET | Return success rate, failure rate, average duration, and last build status. | `{ "successRate": 92, "failureRate": 8, "avgBuildTime": "3:12", "lastBuildStatus": "success" }` |
+| `/api/builds` | GET | List recent workflow runs. Supports `limit` query param. | `[ { "id": 123, "workflowName": "CI", "branch": "main", "status": "completed", "conclusion": "success", "duration": 192, "timestamp": "2023-10-10T12:00:00Z" } ]` |
+| `/api/builds/:id` | GET | Detailed data for a single workflow run. | `{ "id": 123, "workflowName": "CI", "branch": "main", "status": "completed", "conclusion": "success", "duration": 192, "timestamp": "2023-10-10T12:00:00Z", "htmlUrl": "https://github.com/..." }` |
+| `/api/builds/:id/log` | GET | Retrieve log text for the run. | `{ "log": "..." }` |
+
+## Database Schema
+The backend uses Prisma ORM. The `WorkflowRun` model captures metadata for each run.
+
 
 ```prisma
 // prisma/schema.prisma
