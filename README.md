@@ -16,6 +16,12 @@ GitHub Actions API -> Express Backend -> PostgreSQL <- React Frontend
 # copy environment variables
 cp .env.example .env
 
+# populate credentials
+# GH_TOKEN=your_github_token
+# REPO_OWNER=owner
+# REPO_NAME=repo
+# WEBHOOK_URL=https://hooks.slack.com/services/...
+
 # install dependencies and run tests
 cd backend && npm install && npm test && cd ..
 cd frontend && npm install && npm test && cd ..
