@@ -33,4 +33,3 @@
 - Target repositories use GitHub Actions.
 - Slack webhook is reachable from the backend environment.
 - Cron-driven sync runs at configurable intervals (default every 5 minutes).
-

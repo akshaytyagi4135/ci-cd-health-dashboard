@@ -74,7 +74,7 @@ Retrieve log output for the specified run.
 
 ## Database Schema
 The backend uses Prisma ORM. The `WorkflowRun` model stores metadata for every GitHub Actions run.
-=======
+
 The system periodically retrieves workflow run data from the GitHub Actions API, persists it in PostgreSQL, and serves metrics and run details via an Express.js API. A React frontend consumes this API to render a dashboard. On failed runs, the backend sends alerts through a configurable Slack webhook.
 
 ```mermaid
@@ -96,6 +96,7 @@ flowchart LR
 
 ## Database Schema
 The backend uses Prisma ORM. The `WorkflowRun` model captures metadata for each run.
+
 
 
 ```prisma
@@ -137,7 +138,6 @@ App
 - **Build List:** table of recent runs showing status (color coded), branch, duration, and timestamp.
 - **Charts:** visualizations for success/failure distribution and build time trends.
 - **Detail Modal:** slide-in or modal showing run metadata and log snippet when a build row is clicked.
-
 
 ## Alert Flow
 1. Backend fetches new runs from GitHub API.
