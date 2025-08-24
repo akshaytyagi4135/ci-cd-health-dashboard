@@ -39,6 +39,7 @@ jobs:
       - name: Notify Slack on success
         if: success()
         run: |
+
           COMMIT_MSG=$(git log -1 --pretty=%s)
           RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           payload=$(cat <<EOF
@@ -49,9 +50,15 @@ EOF
           )
           curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
 
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"✅ CI passed for ${GITHUB_REPOSITORY} on ${GITHUB_REF}"}' \
+            "$SLACK_WEBHOOK_URL"
+
+
       - name: Notify Slack on failure
         if: failure()
         run: |
+
           COMMIT_MSG=$(git log -1 --pretty=%s)
           RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           payload=$(cat <<EOF
@@ -61,3 +68,8 @@ EOF
 EOF
           )
           curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{"text":"❌ CI failed for ${GITHUB_REPOSITORY} on ${GITHUB_REF}"}' \
+            "$SLACK_WEBHOOK_URL"
+
