@@ -26,6 +26,12 @@ docker-compose up --build
 
 The frontend will be available at http://localhost:3000 and the backend at http://localhost:4000.
 
+### GitHub Actions & Slack Notifications
+
+This repository includes a workflow at `.github/workflows/ci.yml` that installs dependencies, runs the backend and frontend test suites, and posts the result to Slack.
+
+To enable notifications, add a repository secret named `SLACK_WEBHOOK_URL` with the webhook for the `ci-cd-health-dashboard` channel (e.g. `https://hooks.slack.com/services/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`). The workflow will automatically send messages on success and failure.
+
 ## How AI Was Used
 
 This project was generated with assistance from an AI system prompted to design, implement, and document a production-ready CI/CD pipeline health dashboard.

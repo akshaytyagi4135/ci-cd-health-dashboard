@@ -24,3 +24,13 @@
 - **Slack Incoming Webhook:** to post alerts on pipeline failures.
 - **Node Cache / in-memory caching:** to reduce GitHub API rate usage.
 
+## Non-Functional Requirements
+- **Security:** Secrets like GitHub tokens and webhook URLs must be provided via environment variables and never committed.
+- **Performance:** Use in-memory caching to avoid hitting GitHub rate limits and keep API responses under 500ms.
+- **Reliability:** Background sync jobs should handle transient errors and retry failed API calls.
+
+## Assumptions
+- Target repositories use GitHub Actions.
+- Slack webhook is reachable from the backend environment.
+- Cron-driven sync runs at configurable intervals (default every 5 minutes).
+
