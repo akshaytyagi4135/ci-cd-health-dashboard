@@ -1,5 +1,5 @@
 # Backend Dockerfile
-FROM node:18-alpine3.19 AS builder
+FROM node:18-alpine3.18 AS builder
 WORKDIR /app
 # Install OpenSSL 1.1 compatibility libraries for Prisma
 RUN apk add --no-cache openssl1.1-compat
@@ -10,7 +10,7 @@ RUN npm install --production
 RUN npx prisma generate
 COPY . .
 
-FROM node:18-alpine3.19
+FROM node:18-alpine3.18
 WORKDIR /app
 # Install OpenSSL runtime dependency
 RUN apk add --no-cache openssl1.1-compat
