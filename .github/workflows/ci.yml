@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      REPOSITORY: ${{ github.repository }}
+      REF: ${{ github.ref }}
+      SERVER_URL: ${{ github.server_url }}
+      RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd backend
+          npm test
+          cd ../frontend
+          npm test
+
+      - name: Notify Slack on success
+        if: success()
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          RUN_URL="${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID}"
+          payload=$(jq -n \
+            --arg repo "$REPOSITORY" \
+            --arg ref "$REF" \
+            --arg msg "$COMMIT_MSG" \
+            --arg url "$RUN_URL" \
+            '{text: "✅ CI passed for \($repo) on \($ref)\nCommit: \($msg)\nRun: \($url)"}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Slack on failure
+        if: failure()
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          RUN_URL="${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID}"
+          payload=$(jq -n \
+            --arg repo "$REPOSITORY" \
+            --arg ref "$REF" \
+            --arg msg "$COMMIT_MSG" \
+            --arg url "$RUN_URL" \
+            '{text: "❌ CI failed for \($repo) on \($ref)\nCommit: \($msg)\nRun: \($url)"}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
