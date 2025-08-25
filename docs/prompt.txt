@@ -1,0 +1,103 @@
+Role: You are an AI Assistant acting as a full-stack Principal DevOps & Software Engineer. Your task is to build a complete, production-grade CI/CD Pipeline Health Dashboard for GitHub Actions.
+
+Objective: Create a fully functional, containerized application with a detailed design, source code, and documentation. The final output must be a cohesive project that a senior engineering team can immediately deploy, extend, and maintain.
+
+Core Requirements:
+
+Data Collection: The backend must periodically fetch pipeline execution data (workflow runs) from the GitHub Actions API for a specified repository. Key data points: conclusion (success/failure), status (completed, in_progress), duration, name, id, head_branch, timestamp.
+
+Real-time Metrics: Calculate and expose the following metrics via an API:
+
+Success Rate (%) and Failure Rate (%) over a configurable time window (e.g., last 100 runs or 7 days).
+
+Average Build Time (in minutes:seconds) for successful builds.
+
+Status of the last build (e.g., "Success", "Failure", "In Progress").
+
+Alerting System: Implement an alerting service that triggers on pipeline failure. Alerts must be sent via a configurable webhook URL, making them compatible with Slack, Microsoft Teams, or email services (e.g., SendGrid). The alert must include critical context: repo name, workflow name, branch, and a link to the failed run.
+
+Frontend UI (React): Build a simple, clean dashboard UI with the following components:
+
+A summary panel with large, clear metrics (Success Rate %, Avg. Build Time, Last Build Status).
+
+A list or table of the latest builds, showing their status (with color codes), branch, duration, and timestamp.
+
+Clicking a build should display a modal or slide-in panel with a more detailed log (fetching the log URL from the GitHub API on demand is acceptable; streaming full logs is out of scope).
+
+Use a modern charting library (e.g., Recharts) to visualize historical success/failure rates (e.g., a pie chart) and build time trends (e.g., a line chart).
+
+Technology Stack:
+
+Backend: Node.js (Express.js framework).
+
+Frontend: React (Create React App or Vite), using functional components and hooks.
+
+Database: PostgreSQL.
+
+Caching: Use in-memory caching (e.g, node-cache) for frequent API calls to avoid hitting GitHub rate limits.
+
+Alerting: Use axios to make HTTP POST requests to a webhook.
+
+Deployment: The entire application must be containerized using Docker. Provide a multi-stage Dockerfile for the backend and a Dockerfile for the frontend. Include a docker-compose.yml file to orchestrate the backend, frontend, and PostgreSQL database.
+
+Deliverables Structure:
+Generate the entire project in the following structure. I will prompt you step-by-step for each section. For each section, provide thorough, detailed, and implementable content.
+
+1. 🧠 Requirement Analysis Document
+
+Key Features: List the epic and user stories (e.g., "As a DevOps engineer, I want to see the success rate so that I can gauge system stability").
+
+Tech Choices: Justify the chosen stack (Node, React, PostgreSQL, Prisma, Recharts, Docker).
+
+APIs/Tools Required: GitHub REST API (/repos/{owner}/{repo}/actions/runs), Slack Incoming Webhook, etc.
+
+2. 🏗️ Tech Design Document
+
+High-Level Architecture: A textual and mermaid.js diagram of the system flow: GitHub API -> Backend Service -> DB <- Frontend. Include the alerting service flow.
+
+API Structure: List all RESTful endpoints (e.g., GET /api/metrics/summary, GET /api/builds). For each, provide the route, HTTP method, and a sample JSON response.
+
+DB Schema: Provide the Prisma schema (schema.prisma) defining the WorkflowRun model with all necessary fields (id, repoName, status, conclusion, duration, etc.).
+
+UI Layout: Describe the component hierarchy (e.g., App -> Dashboard -> MetricCard, BuildList, Charts). Provide a simple wireframe description.
+
+3. 🔧 Source Code Repository
+
+Generate the complete, working source code.
+
+Backend: Structure the Node.js project with separate files for app.js, routes, services (e.g., github.service.js, alert.service.js), and models. Include a prisma directory with migrations. Include package.json with all dependencies.
+
+Frontend: Structure the React project with components, services (API calls), and hooks. Include package.json.
+
+Environment Variables: Provide a .env.example file with necessary vars (GITHUB_TOKEN, REPO_OWNER, REPO_NAME, WEBHOOK_URL, DATABASE_URL).
+
+4. 🚢 Deployment
+
+Provide optimized Dockerfile for backend and frontend.
+
+Provide a complete docker-compose.yml file to build and run all services together.
+
+5. 📖 Documentation (README.md)
+
+Title: CI/CD Pipeline Health Dashboard
+
+Architecture Summary: A brief overview with a diagram.
+
+Setup & Run Instructions: Step-by-step commands for local development (docker-compose up) and production deployment.
+
+How AI Was Used: A section detailing how you, the AI, were prompted to create this project. Include examples of the key prompts used.
+
+Key Learnings & Assumptions: List any technical decisions, simplifications, or potential future improvements.
+
+Constraints & Quality Requirements:
+
+Code Quality: Use modern ES6+ JavaScript/TypeScript patterns. Code must be clean, commented, and error-handled (use try/catch). Use async/await.
+
+Security: Never hardcode secrets. The GitHub token and webhook URL must be injected via environment variables.
+
+Performance: Implement caching for GitHub API responses to minimize rate limiting.
+
+Production-Ready: The output should not be a POC but a foundation for a production system.
+
+Initialization:
+Start by generating the Requirement Analysis Document (🧠). 
