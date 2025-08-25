@@ -1,0 +1,25 @@
+// Prisma schema for CI/CD Pipeline Health Dashboard
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model WorkflowRun {
+  id          Int      @id @default(autoincrement())
+  runId       BigInt   @unique
+  repoName    String
+  workflowName String
+  headBranch  String
+  status      String
+  conclusion  String?
+  duration    Int?
+  htmlUrl     String
+  createdAt   DateTime
+  updatedAt   DateTime?
+}
