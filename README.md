@@ -26,6 +26,9 @@ cp .env.example .env
 cd backend && npm install && npm test && cd ..
 cd frontend && npm install && npm test && cd ..
 
+# prepare database (skip if using docker-compose)
+cd backend && npm run migrate && cd ..
+
 # run services
 docker-compose up --build
 ```
