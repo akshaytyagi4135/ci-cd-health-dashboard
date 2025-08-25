@@ -97,7 +97,6 @@ flowchart LR
 ## Database Schema
 The backend uses Prisma ORM. The `WorkflowRun` model captures metadata for each run.
 
-
 ```prisma
 // prisma/schema.prisma
 model WorkflowRun {
