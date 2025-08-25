@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function BuildList({ builds, onSelect }) {
   return (
-    <table style={{ width: '100%', marginTop: '1rem' }}>
+    <table className="build-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -14,16 +14,23 @@ export default function BuildList({ builds, onSelect }) {
         </tr>
       </thead>
       <tbody>
-        {builds.map(b => (
-          <tr key={b.id} onClick={() => onSelect(b)} style={{ cursor: 'pointer' }}>
-            <td>{b.id}</td>
-            <td>{b.workflowName}</td>
-            <td>{b.headBranch}</td>
-            <td style={{ color: b.conclusion === 'success' ? 'green' : b.conclusion === 'failure' ? 'red' : 'gray' }}>{b.conclusion || b.status}</td>
-            <td>{b.duration || '-'}</td>
-            <td>{new Date(b.createdAt).toLocaleString()}</td>
-          </tr>
-        ))}
+        {builds.map(b => {
+          const statusClass = b.conclusion === 'success'
+            ? 'status-success'
+            : b.conclusion === 'failure'
+            ? 'status-failure'
+            : 'status-other';
+          return (
+            <tr key={b.id} onClick={() => onSelect(b)} className="build-row">
+              <td>{b.id}</td>
+              <td>{b.workflowName}</td>
+              <td>{b.headBranch}</td>
+              <td className={statusClass}>{b.conclusion || b.status}</td>
+              <td>{b.duration || '-'}</td>
+              <td>{new Date(b.createdAt).toLocaleString()}</td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
