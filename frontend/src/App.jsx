@@ -4,9 +4,7 @@ import MetricCard from './components/MetricCard.jsx';
 import BuildList from './components/BuildList.jsx';
 import BuildModal from './components/BuildModal.jsx';
 import ChartPanel from './components/ChartPanel.jsx';
-import './App.css';
-
-
+import { AnimatePresence } from 'framer-motion';
 export default function App() {
   const [summary, setSummary] = useState(null);
   const [builds, setBuilds] = useState([]);
@@ -21,11 +19,11 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app-container">
-      <h1>CI/CD Pipeline Health Dashboard</h1>
+    <div className="max-w-6xl mx-auto p-4 md:p-8">
+      <h1 className="text-3xl font-bold mb-8">CI/CD Pipeline Health Dashboard</h1>
       {summary && (
         <>
-          <div className="metric-grid">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <MetricCard title="Success Rate" value={`${summary.successRate.toFixed(1)}%`} />
             <MetricCard title="Failure Rate" value={`${summary.failureRate.toFixed(1)}%`} />
             <MetricCard title="Avg Build Time" value={`${summary.avgDuration}s`} />
@@ -35,7 +33,9 @@ export default function App() {
         </>
       )}
       <BuildList builds={builds} onSelect={setSelected} />
-      {selected && <BuildModal build={selected} onClose={() => setSelected(null)} />}
+      <AnimatePresence>
+        {selected && <BuildModal build={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
     </div>
   );
 }

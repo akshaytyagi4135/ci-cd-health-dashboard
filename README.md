@@ -1,11 +1,14 @@
 # CI/CD Pipeline Health Dashboard
 
-A full-stack application for monitoring GitHub Actions workflows. The backend ingests workflow run data, stores it in PostgreSQL, exposes metrics via a REST API, and sends Slack alerts on failures. The frontend displays summary metrics, recent builds, and basic visualizations.
+A full-stack application for monitoring GitHub Actions workflows. The backend ingests workflow run data, stores it in PostgreSQL, exposes metrics via a REST API, and sends Slack alerts on failures. The frontend, built with React, Tailwind CSS, Recharts, and Framer Motion, displays summary metrics, recent builds, and animated visualizations.
+
 
 ## Architecture
 
 ```
+
 GitHub Actions API -> Express Backend -> PostgreSQL <- React Frontend
+
                                |
                                +-> Slack Webhook Alerts
 ```
