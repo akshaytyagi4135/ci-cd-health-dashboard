@@ -6,6 +6,7 @@ import BuildModal from './components/BuildModal.jsx';
 import ChartPanel from './components/ChartPanel.jsx';
 import './App.css';
 
+
 export default function App() {
   const [summary, setSummary] = useState(null);
   const [builds, setBuilds] = useState([]);
