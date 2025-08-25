@@ -15,7 +15,7 @@ export function startSync() {
       const data = await fetchWorkflowRuns(owner, repo, token);
       for (const run of data.workflow_runs) {
         await prisma.workflowRun.upsert({
-          where: { runId: run.id },
+          where: { runId: BigInt(run.id) },
           update: {
             status: run.status,
             conclusion: run.conclusion,
@@ -23,7 +23,7 @@ export function startSync() {
             updatedAt: new Date(run.updated_at)
           },
           create: {
-            runId: run.id,
+            runId: BigInt(run.id),
             repoName: repo,
             workflowName: run.name,
             headBranch: run.head_branch,

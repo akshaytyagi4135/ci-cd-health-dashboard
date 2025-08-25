@@ -101,7 +101,7 @@ The backend uses Prisma ORM. The `WorkflowRun` model captures metadata for each 
 // prisma/schema.prisma
 model WorkflowRun {
   id           Int       @id @default(autoincrement())
-  runId        Int       @unique
+  runId        BigInt    @unique
   repoName     String
   workflowName String
   headBranch   String
