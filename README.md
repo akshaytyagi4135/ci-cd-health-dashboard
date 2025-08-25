@@ -33,7 +33,6 @@ cd backend && npm run migrate && cd ..
 docker-compose up --build
 ```
 
-
 The frontend will be available at http://localhost:3000 and the backend at http://localhost:4000. API requests from the frontend
 to `/api/*` are proxied to the backend service by Nginx.
 
