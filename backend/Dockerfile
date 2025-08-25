@@ -17,4 +17,3 @@ RUN apk add --no-cache openssl1.1-compat
 COPY --from=builder /app /app
 # Run migrations before starting the server
 CMD ["sh", "-c", "npx prisma migrate deploy && node src/server.js"]
-
